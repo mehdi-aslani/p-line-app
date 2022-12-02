@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { getRequest, postRequest } from "../../services/PlineTools";
+import PlineTools from "../../services/PlineTools";
 
 const UserGroupForm = () => {
   const navigate = useNavigate();
   const [state, setState] = useState({});
   useEffect(() => {
-    getRequest("/sip-user-groups")
+    PlineTools.getRequest("/sip-user-groups")
       .then((result) => {
         setState(result);
       })
@@ -19,7 +19,7 @@ const UserGroupForm = () => {
 
   const saveData = (e) => {
     e.preventDefault();
-    postRequest("/save-sip-user-groups", state).then((result) => {
+    PlineTools.postRequest("/save-sip-user-groups", state).then((result) => {
       if (result.error) {
         result.errorsDesc.forEach((value) => {
           toast.error(value);

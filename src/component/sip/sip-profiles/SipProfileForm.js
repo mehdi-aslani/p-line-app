@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getRequest, postRequest } from "../../services/PlineTools";
+import PlineTools from "../../services/PlineTools";
 
 const SipProfileForm = () => {
   const params = useParams();
@@ -19,7 +19,7 @@ const SipProfileForm = () => {
       url += "/update";
     }
 
-    postRequest(url, state)
+    PlineTools.postRequest(url, state)
       .then((result) => {
         if (result.error) {
           result.errorsDesc.forEach((v) => {
@@ -52,7 +52,7 @@ const SipProfileForm = () => {
         description: "",
       });
     } else {
-      getRequest("/sip-profiles/get/" + id)
+      PlineTools.getRequest("/sip-profiles/get/" + id)
         .then((data) => {
           data.error = [];
           setState(data);

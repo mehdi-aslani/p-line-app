@@ -4,7 +4,7 @@ import { PencilSquare, Trash, UiChecks } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import GridView from "../../grid-view/GridView";
-import { getRequest, postRequest } from "../../services/PlineTools";
+import PlineTools from "../../services/PlineTools";
 
 const SipProfilesList = () => {
   const [state, setState] = useState({ content: [] });
@@ -90,7 +90,7 @@ const SipProfilesList = () => {
       sort = "sort=" + sortParams.sort;
     }
 
-    getRequest(
+    PlineTools.getRequest(
       `/sip-profiles/index?page=${page}&size=${size}&${searchUrl}&${sort}`
     )
       .then((data) => {
@@ -99,14 +99,14 @@ const SipProfilesList = () => {
       .catch((error) => {
         toast.error(
           "An error occurred while executing your request. Contact the system administrator\n" +
-            error
+          error
         );
       });
   };
 
   const Delete = (id) => {
     if (window.confirm("Are you sure you want to delete this Profile?")) {
-      postRequest("/sip-profiles/delete", { id: id }).then((result) => {
+      PlineTools.postRequest("/sip-profiles/delete", { id: id }).then((result) => {
         if (result.error) {
           result.errorsDesc.forEach((element) => {
             toast.error(element);
@@ -125,6 +125,7 @@ const SipProfilesList = () => {
 
   useEffect(() => {
     getData();
+    return () => { };
   }, []);
 
   const search = (f, v) => {

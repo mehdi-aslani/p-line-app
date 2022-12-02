@@ -9,7 +9,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import GridView from "../../grid-view/GridView";
-import { getRequest, postRequest } from "../../services/PlineTools";
+import PlineTools from "../../services/PlineTools";
 
 const SipTrunkList = () => {
   const [state, setState] = useState({ content: [] });
@@ -102,7 +102,9 @@ const SipTrunkList = () => {
 
     if (sortParams.sort.trim() !== "") searchUrl += `&sort=${sortParams.sort}`;
 
-    getRequest(`/sip-trunks/index?page=${page}&size=${size}${searchUrl}`)
+    PlineTools.getRequest(
+      `/sip-trunks/index?page=${page}&size=${size}${searchUrl}`
+    )
       .then((data) => {
         setState(data);
       })
@@ -116,14 +118,16 @@ const SipTrunkList = () => {
 
   const Delete = (id) => {
     if (window.confirm("Are you sure you want to delete this Trunk?")) {
-      postRequest("/sip-trunks/delete", { id: id }).then((result) => {
-        if (result.error) {
-          toast.error("An error occurred while deleting the Trunk");
-        } else {
-          toast.success("The Trunk was deleted");
-          getData();
+      PlineTools.postRequest("/sip-trunks/delete", { id: id }).then(
+        (result) => {
+          if (result.error) {
+            toast.error("An error occurred while deleting the Trunk");
+          } else {
+            toast.success("The Trunk was deleted");
+            getData();
+          }
         }
-      });
+      );
     }
   };
 

@@ -2,37 +2,45 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { getRequest, postRequest } from "../../services/PlineTools";
+import PlineTools from "../../services/PlineTools";
 
 const SipGlobals = () => {
   const navigate = useNavigate();
   const [state, setState] = useState({});
-  useEffect(() => {
-    getRequest("/settings/sip-globals")
+
+  const load = () => {
+    PlineTools.getRequest("/settings/sip-globals")
       .then((result) => {
-        setState(result);
+        console.log(result.data);
+        setState(result.data);
       })
       .catch(() => {
         toast.error("Getting Data failed");
       });
+  };
+
+  useEffect(() => {
+    load();
   }, []);
 
   const saveData = (e) => {
     e.preventDefault();
-    postRequest("/settings/save-sip-globals", state).then((result) => {
-      if (result.error) {
-        result.errorsDesc.forEach((value) => {
-          toast.error(value);
-        });
-      } else {
-        toast.success("Saved completed successfully");
-        navigate("/home");
+    PlineTools.postRequest("/settings/save-sip-globals", state).then(
+      (result) => {
+        if (result.error) {
+          result.errorsDesc.forEach((value) => {
+            toast.error(value);
+          });
+        } else {
+          toast.success("Saved completed successfully");
+          navigate("/home");
+        }
       }
-    });
+    );
   };
 
   return (
-    <Container>
+    <section className="m-3">
       <h3>SIP Globals Settings</h3>
       <hr />
       <Form onSubmit={saveData}>
@@ -43,14 +51,7 @@ const SipGlobals = () => {
                 type="checkbox"
                 label="Debug"
                 onChange={(e) => {
-                  let tmp = { ...state };
-                  tmp.debug = e.target.checked;
-                  setState(tmp);
-                }}
-                onClick={(e) => {
-                  let tmp = { ...state };
-                  tmp.debug = e.target.checked;
-                  setState(tmp);
+                  setState({ ...state, debug: e.target.checked });
                 }}
                 defaultChecked={state.debug}
               />
@@ -62,14 +63,7 @@ const SipGlobals = () => {
                 type="checkbox"
                 label="Disable Multi Domain"
                 onChange={(e) => {
-                  let tmp = { ...state };
-                  tmp.disableMultiDomain = e.target.checked;
-                  setState(tmp);
-                }}
-                onClick={(e) => {
-                  let tmp = { ...state };
-                  tmp.disableMultiDomain = e.target.checked;
-                  setState(tmp);
+                  setState({ ...state, disableMultiDomain: e.target.checked });
                 }}
                 defaultChecked={state.disableMultiDomain}
               />
@@ -83,14 +77,10 @@ const SipGlobals = () => {
                 type="checkbox"
                 label="Ignore Uri User Options"
                 onChange={(e) => {
-                  let tmp = { ...state };
-                  tmp.ignoreUriUserOptions = e.target.checked;
-                  setState(tmp);
-                }}
-                onClick={(e) => {
-                  let tmp = { ...state };
-                  tmp.ignoreUriUserOptions = e.target.checked;
-                  setState(tmp);
+                  setState({
+                    ...state,
+                    ignoreUriUserOptions: e.target.checked,
+                  });
                 }}
                 defaultChecked={state.ignoreUriUserOptions}
               />
@@ -105,14 +95,10 @@ const SipGlobals = () => {
                 type="checkbox"
                 label="Mwi Disable Initial Unsolicited"
                 onChange={(e) => {
-                  let tmp = { ...state };
-                  tmp.mwiDisableInitialUnsolicited = e.target.checked;
-                  setState(tmp);
-                }}
-                onClick={(e) => {
-                  let tmp = { ...state };
-                  tmp.mwiDisableInitialUnsolicited = e.target.checked;
-                  setState(tmp);
+                  setState({
+                    ...state,
+                    mwiDisableInitialUnsolicited: e.target.checked,
+                  });
                 }}
                 defaultChecked={state.mwiDisableInitialUnsolicited}
               />
@@ -130,11 +116,12 @@ const SipGlobals = () => {
                 type="number"
                 required={true}
                 onChange={(e) => {
-                  let tmp = { ...state };
-                  tmp.contactExpirationCheckInterval = parseInt(e.target.value);
-                  setState(tmp);
+                  setState({
+                    ...state,
+                    contactExpirationCheckInterval: e.target.checked,
+                  });
                 }}
-                defaultValue={state?.contactExpirationCheckInterval}
+                defaultValue={state.contactExpirationCheckInterval}
               />
             </Form.Group>
           </Col>
@@ -145,9 +132,10 @@ const SipGlobals = () => {
                 type="text"
                 required
                 onChange={(e) => {
-                  let tmp = { ...state };
-                  tmp.defaultFromUser = e.target.value;
-                  setState(tmp);
+                  setState({
+                    ...state,
+                    defaultFromUser: e.target.checked,
+                  });
                 }}
                 defaultValue={state.defaultFromUser}
               />
@@ -162,9 +150,10 @@ const SipGlobals = () => {
                 type="text"
                 required
                 onChange={(e) => {
-                  let tmp = { ...state };
-                  tmp.defaultOutboundEndpoint = e.target.value;
-                  setState(tmp);
+                  setState({
+                    ...state,
+                    defaultOutboundEndpoint: e.target.checked,
+                  });
                 }}
                 defaultValue={state.defaultOutboundEndpoint}
               />
@@ -177,9 +166,10 @@ const SipGlobals = () => {
                 type="text"
                 required
                 onChange={(e) => {
-                  let tmp = { ...state };
-                  tmp.defaultRealm = e.target.value;
-                  setState(tmp);
+                  setState({
+                    ...state,
+                    defaultRealm: e.target.checked,
+                  });
                 }}
                 defaultValue={state.defaultRealm}
               />
@@ -193,9 +183,10 @@ const SipGlobals = () => {
               <Form.Control
                 type="text"
                 onChange={(e) => {
-                  let tmp = { ...state };
-                  tmp.defaultVoicemailExtension = e.target.value;
-                  setState(tmp);
+                  setState({
+                    ...state,
+                    defaultVoicemailExtension: e.target.checked,
+                  });
                 }}
                 defaultValue={state.defaultVoicemailExtension}
               />
@@ -398,7 +389,7 @@ const SipGlobals = () => {
           </Col>
         </Row>
       </Form>
-    </Container>
+    </section>
   );
 };
 

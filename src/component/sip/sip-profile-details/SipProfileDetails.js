@@ -5,11 +5,7 @@ import { Col, Form, Row, Tabs } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import { toast } from "react-toastify";
-import {
-  getRequest,
-  postRequest,
-  stringToLabel,
-} from "../../services/PlineTools";
+import PlineTools from "../../services/PlineTools";
 
 const SipProfileDetails = () => {
   const profileParam = useParams();
@@ -26,9 +22,9 @@ const SipProfileDetails = () => {
 
   useEffect(() => {
     const id = profileParam.id;
-    getRequest("/sip-profile-details/get?id=" + id).then((data) => {
+    PlineTools.getRequest("/sip-profile-details/get?id=" + id).then((data) => {
       setState(data);
-      getRequest("/sip-profile-details/params").then((result) => {
+      PlineTools.getRequest("/sip-profile-details/params").then((result) => {
         if (result.error) {
           result.errorsDesc.forEach((v) => {
             toast.error(v);
@@ -37,9 +33,7 @@ const SipProfileDetails = () => {
           setParams(result);
         }
       });
-      /////////////
     });
-    ///////////////
   }, []);
 
   const draw = (_type, v, i) => {
@@ -54,12 +48,12 @@ const SipProfileDetails = () => {
       Object.keys(v[2]).forEach((val) => {
         obj.push({
           value: val,
-          label: stringToLabel(v[2][val]),
+          label: PlineTools.stringToLabel(v[2][val]),
         });
 
         if (state[_type][v[0]] === undefined) {
           if (v[3] === val) {
-            select = { value: val, label: stringToLabel(v[2][val]) };
+            select = { value: val, label: PlineTools.stringToLabel(v[2][val]) };
           }
         } else {
           let data = state[_type][v[0]];
@@ -75,13 +69,13 @@ const SipProfileDetails = () => {
               e = e.trim();
               select.push({
                 value: e,
-                label: stringToLabel(v[2][e]),
+                label: PlineTools.stringToLabel(v[2][e]),
               });
             });
           } else {
             select = {
               value: data,
-              label: stringToLabel(data),
+              label: PlineTools.stringToLabel(data),
             };
           }
         }
@@ -91,7 +85,7 @@ const SipProfileDetails = () => {
         <Row key={i}>
           <Col>
             <Form.Group className="mb-3" controlId={v[0]}>
-              <Form.Label>{stringToLabel(v[0])}</Form.Label>
+              <Form.Label>{PlineTools.stringToLabel(v[0])}</Form.Label>
               <Select
                 isMulti={v[5] === undefined ? false : v[5]}
                 options={obj}
@@ -127,7 +121,7 @@ const SipProfileDetails = () => {
             <Form.Group className="mb-3" controlId={v[0]}>
               <Form.Check
                 type="checkbox"
-                label={stringToLabel(v[0])}
+                label={PlineTools.stringToLabel(v[0])}
                 defaultChecked={select}
                 onChange={(e) => {
                   let tmp = { ...state };
@@ -150,7 +144,7 @@ const SipProfileDetails = () => {
         <Row key={i}>
           <Col>
             <Form.Group className="mb-3" controlId={v[0]}>
-              <Form.Label>{stringToLabel(v[0])}</Form.Label>
+              <Form.Label>{PlineTools.stringToLabel(v[0])}</Form.Label>
               <Form.Control
                 type="number"
                 name={v[0]}
@@ -177,7 +171,7 @@ const SipProfileDetails = () => {
         <Row key={i}>
           <Col>
             <Form.Group className="mb-3" controlId={v[0]}>
-              <Form.Label>{stringToLabel(v[0])}</Form.Label>
+              <Form.Label>{PlineTools.stringToLabel(v[0])}</Form.Label>
               <Form.Control
                 type="text"
                 name={v[0]}
@@ -199,7 +193,7 @@ const SipProfileDetails = () => {
   const submit = (e) => {
     e.preventDefault();
     state.id = profileParam.id;
-    postRequest("/sip-profile-details/save", state)
+    PlineTools.postRequest("/sip-profile-details/save", state)
       .then((result) => {
         if (result.error) {
           toast.error(

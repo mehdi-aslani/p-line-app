@@ -3,7 +3,7 @@ import "./Login.css";
 import "../../App.css";
 import Avatar from "./avatar_2x.png";
 import { toast } from "react-toastify";
-import { postRequest } from "../services/PlineTools";
+import PlineTools from "../services/PlineTools";
 
 function Login(props) {
   const [state] = useState({
@@ -14,8 +14,8 @@ function Login(props) {
 
   const Login = (e) => {
     e.preventDefault();
-    postRequest("/users/login", state).then((result) => {
-      if (result.has_error == false) {
+    PlineTools.postRequest("/users/login", state).then((result) => {
+      if (result.has_error === false) {
         toast.success("Login Successfully");
         props.LoginAction(result);
       } else {

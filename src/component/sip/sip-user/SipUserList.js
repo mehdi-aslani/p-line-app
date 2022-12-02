@@ -3,7 +3,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import GridView from "../../grid-view/GridView";
-import { getRequest, postRequest } from "../../services/PlineTools";
+import PlineTools from "../../services/PlineTools";
 
 const SipUserList = () => {
   const [state, setState] = useState({ content: [] });
@@ -63,7 +63,9 @@ const SipUserList = () => {
   const getData = (page = 0, size = pageSize) => {
     const searchUrl = new URLSearchParams(searchParams).toString();
 
-    getRequest(`/sip-users/index?page=${page}&size=${size}&${searchUrl}`)
+    PlineTools.getRequest(
+      `/sip-users/index?page=${page}&size=${size}&${searchUrl}`
+    )
       .then((data) => {
         setState(data);
       })
@@ -77,7 +79,7 @@ const SipUserList = () => {
 
   const Delete = (id) => {
     if (window.confirm("Are you sure you want to delete this User?")) {
-      postRequest("/sip-users/delete", { id: id }).then((result) => {
+      PlineTools.postRequest("/sip-users/delete", { id: id }).then((result) => {
         if (result.delete) {
           toast.success("The user was deleted");
           getData();

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Col, Container, Form, Row, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getRequest, postRequest } from "../../services/PlineTools";
+import PlineTools from "../../services/PlineTools";
 const SystemSipSettings = () => {
   const navigate = useNavigate();
   const [state, setState] = useState({});
   useEffect(() => {
-    getRequest("/settings/system-sip-settings")
+    PlineTools.getRequest("/settings/system-sip-settings")
       .then((result) => {
         setState(result);
       })
@@ -17,16 +17,18 @@ const SystemSipSettings = () => {
   }, []);
   const saveData = (e) => {
     e.preventDefault();
-    postRequest("/settings/save-system-sip-settings", state).then((result) => {
-      if (result.error) {
-        result.errorsDesc.forEach((value) => {
-          toast.error(value);
-        });
-      } else {
-        toast.success("Saved completed successfully");
-        navigate("/home");
+    PlineTools.postRequest("/settings/save-system-sip-settings", state).then(
+      (result) => {
+        if (result.error) {
+          result.errorsDesc.forEach((value) => {
+            toast.error(value);
+          });
+        } else {
+          toast.success("Saved completed successfully");
+          navigate("/home");
+        }
       }
-    });
+    );
   };
   return (
     <div>

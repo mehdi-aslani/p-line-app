@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Col, Container, Form, Row, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import {
-  getRequest,
-  postRequest,
-  stringToLabel,
-} from "../../services/PlineTools";
+import PlineTools from "../../services/PlineTools";
 import Select from "react-select";
 
 const YesNo = [
@@ -46,7 +42,7 @@ const SipTrunkForm = () => {
       id = "";
     }
     const url = "/sip-trunks/get?id=" + id;
-    getRequest(url)
+    PlineTools.getRequest(url)
       .then((result) => {
         sipProfiles = [];
         result.sipProfiles.forEach((v) => {
@@ -65,7 +61,7 @@ const SipTrunkForm = () => {
     if (params.id !== undefined) {
       action = "update";
     }
-    postRequest("/sip-trunks/" + action, state).then((result) => {
+    PlineTools.postRequest("/sip-trunks/" + action, state).then((result) => {
       if (result.error) {
         result.errorsDesc.forEach((value) => {
           toast.error(value);
@@ -275,7 +271,7 @@ const SipTrunkForm = () => {
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3" controlId="register">
-              <Form.Label>{stringToLabel("register")}</Form.Label>
+              <Form.Label>{PlineTools.stringToLabel("register")}</Form.Label>
               <Select
                 isMulti={false}
                 required
@@ -291,7 +287,7 @@ const SipTrunkForm = () => {
           </Col>
           <Col md={6}>
             <Form.Group className="mb-3" controlId="tblSipProfile">
-              <Form.Label>{stringToLabel("SIP Profile")}</Form.Label>
+              <Form.Label>{PlineTools.stringToLabel("SIP Profile")}</Form.Label>
               <Select
                 required
                 isMulti={false}
@@ -326,7 +322,7 @@ const SipTrunkForm = () => {
           </Col>
           <Col md={6}>
             <Form.Group className="mb-3" controlId="enable">
-              <Form.Label>{stringToLabel("enable")}</Form.Label>
+              <Form.Label>{PlineTools.stringToLabel("enable")}</Form.Label>
               <Select
                 required
                 isMulti={false}

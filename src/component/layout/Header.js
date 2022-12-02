@@ -1,8 +1,8 @@
 import React from "react";
-import { Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
+import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { PersonCircle } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
-import { getCookies, postRequest } from "../services/PlineTools";
+import PlineTools from "../services/PlineTools";
 import { toast } from "react-toastify";
 import "./Header.css";
 
@@ -15,7 +15,9 @@ const Header = (props) => {
 
   const apply = () => {
     if (window.confirm("Are you sure you want to apply the changes?")) {
-      postRequest("/configs/apply", { token: getCookies("token") })
+      PlineTools.postRequest("/configs/apply", {
+        token: PlineTools.getCookies("token"),
+      })
         .then((result) => {
           toast.info("Apply configuration successful");
         })
@@ -31,7 +33,7 @@ const Header = (props) => {
   return (
     <header className="header">
       <Navbar bg="dark" variant="dark">
-        <Container>
+        <Container fluid>
           <Navbar.Brand as={Link} to="/home">
             Dashboard
           </Navbar.Brand>
