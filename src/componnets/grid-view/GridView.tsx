@@ -3,35 +3,36 @@ import { Col, Row, Table, Pagination } from "react-bootstrap";
 import { SortAlphaDown, SortAlphaDownAlt } from "react-bootstrap-icons";
 import "./GridView.css";
 
-interface IPagination {
-  size: number;
+export interface IPagination {
+  pageSize: number;
   offset: number;
   pageNumber: number;
   totalElements: number;
+  totalPages: number;
 }
 
-interface IFilter {
+export interface IFilter {
   label: string;
   value: string;
 }
 
-interface IColumns {
+export interface IColumns {
   label: string;
   id: string;
-  search: boolean;
-  sort: boolean;
-  filter: IFilter[];
-  value: Function;
+  search?: boolean;
+  sort?: boolean;
+  filter?: IFilter[];
+  value?: Function;
 }
 
-interface IEvents {
+export interface IEvents {
   first: Function;
   pre: Function;
   next: Function;
   last: Function;
 }
 
-interface IGridView {
+export interface IGridView {
   Pagination: IPagination;
   Columns: IColumns[];
   SortEvent: Function;
@@ -39,6 +40,44 @@ interface IGridView {
   Data: [];
   Events: IEvents;
 }
+
+export interface IGridViewState {
+  content: [];
+  pageable: IPagination;
+  totalPages: number;
+  totalElements: number;
+  size: number;
+}
+
+// {
+//   "content": [],
+//     "pageable":
+//   {
+//     "sort": {
+//       "empty": true,
+//         "sorted": false,
+//           "unsorted": true
+//     },
+//     "offset": 0,
+//       "pageNumber": 0,
+//         "pageSize": 10,
+//           "paged": true,
+//             "unpaged": false
+//   },
+//   "totalPages": 1,
+//     "totalElements": 2,
+//       "last": true,
+//         "size": 10,
+//           "number": 0,
+//             "sort": {
+//     "empty": true,
+//       "sorted": false,
+//         "unsorted": true
+//   },
+//   "first": true,
+//     "numberOfElements": 2,
+//       "empty": false
+// };
 
 const GridView = (props: IGridView) => {
   const [state] = useState({ sort: "-" });
@@ -49,7 +88,7 @@ const GridView = (props: IGridView) => {
         <Col>
           <p>
             <span>Row</span> {props.Pagination.offset + 1} <span>of</span>{" "}
-            {props.Pagination.size * (props.Pagination.pageNumber + 1)}
+            {props.Pagination.pageSize * (props.Pagination.pageNumber + 1)}
             {" ["}
             <span>Max Rows</span> {props.Pagination.totalElements}
             {"]"}
@@ -74,7 +113,7 @@ const GridView = (props: IGridView) => {
                               } else {
                                 state.sort = "-" + v.id;
                               }
-                              props?.SortEvent(state.sort);
+                              props.SortEvent(state.sort);
                             }
                           }}
                         >
@@ -108,14 +147,14 @@ const GridView = (props: IGridView) => {
                             type="text"
                             className="form-control"
                             onChange={(e) => {
-                              props?.SearchEvent(v.id, e.target.value);
+                              props.SearchEvent(v.id, e.target.value);
                             }}
                           />
                         ) : (
                           <select
                             className="form-select"
                             onChange={(e) => {
-                              props?.SearchEvent(v.id, e.target.value);
+                              props.SearchEvent(v.id, e.target.value);
                             }}
                           >
                             <option></option>
